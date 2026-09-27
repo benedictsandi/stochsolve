@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>StochSolve</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Untuk membuat grafik -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<header>
+    <div class="header-content">
+        <h1>StochSolve</h1>
+        <p>Aplikasi Penyelesaian Model Stokastik</p>
+        <span>Mini Riset Pemodelan dan Simulasi Matematis</span>
+    </div>
+</header>
+
+
+<main>
+
+    <!-- ========================= -->
+    <!-- BERANDA -->
+    <!-- ========================= -->
+
+    <section id="beranda">
+
+        <div class="judul-bagian">
+            <h2>Pilih Metode Perhitungan</h2>
+            <p>
+                Aplikasi ini digunakan untuk membantu menyelesaikan
+                perhitungan model stokastik berdasarkan soal Mini Riset.
+            </p>
+        </div>
+
+
+        <div class="menu">
+
+            <div class="card">
+                <div class="nomor">01</div>
+
+                <h3>Rantai Markov 3 State</h3>
+
+                <p>
+                    Distribusi invarian, hitting time,
+                    probabilitas belum mencapai state tujuan,
+                    dan simulasi.
+                </p>
+
+                <span class="sumber">
+                    Jean Walrand - Problem 1.18
+                </span>
+
+                <button onclick="bukaFitur('markov3')">
+                    Buka Perhitungan
+                </button>
+            </div>
+
+
+            <div class="card">
+                <div class="nomor">02</div>
+
+                <h3>Random Sum Poisson</h3>
+
+                <p>
+                    Menghitung nilai harapan dan variansi
+                    jumlah acak dengan jumlah pelanggan Poisson.
+                </p>
+
+                <span class="sumber">
+                    Jean Walrand - Problem 15.12
+                </span>
+
+                <button onclick="bukaFitur('randomSum')">
+                    Buka Perhitungan
+                </button>
+            </div>
+
+
+            <div class="card">
+                <div class="nomor">03</div>
+
+                <h3>Proses Poisson</h3>
+
+                <p>
+                    Menghitung mean, variansi,
+                    dan probabilitas jumlah kedatangan.
+                </p>
+
+                <span class="sumber">
+                    H. Sugiyarto - Latihan No. 2
+                </span>
+
+                <button onclick="bukaFitur('poisson')">
+                    Buka Perhitungan
+                </button>
+            </div>
+
+
+            <div class="card">
+                <div class="nomor">04</div>
+
+                <h3>Antrian M/M/1</h3>
+
+                <p>
+                    Menghitung intensitas lalu lintas,
+                    probabilitas sibuk, waktu tunggu,
+                    dan kondisi sistem.
+                </p>
+
+                <span class="sumber">
+                    H. Sugiyarto - Contoh 9.1
+                </span>
+
+                <button onclick="bukaFitur('antrian')">
+                    Buka Perhitungan
+                </button>
+            </div>
+
+
+            <div class="card">
+                <div class="nomor">05</div>
+
+                <h3>Markov 2 State</h3>
+
+                <p>
+                    Menghitung distribusi stasioner
+                    dan probabilitas keadaan setelah n langkah.
+                </p>
+
+                <span class="sumber">
+                    Zakhar Kabluchko - Problem 2.4.6
+                </span>
+
+                <button onclick="bukaFitur('markov2')">
+                    Buka Perhitungan
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ====================================================== -->
+    <!-- SOAL 1 : MARKOV 3 STATE -->
+    <!-- ====================================================== -->
+
+    <section id="markov3" class="fitur">
+
+        <button class="kembali" onclick="kembali()">
+            ← Kembali ke Beranda
+        </button>
+
+        <div class="judul-bagian">
+            <h2>Rantai Markov 3 State</h2>
+
+            <p>
+                Implementasi Problem 1.18
+                dari Jean Walrand.
+            </p>
+        </div>
+
+
+        <div class="kotak">
+
+            <h3>Matriks Transisi</h3>
+
+            <div class="matrix">
+                <span>0.3</span>
+                <span>0.7</span>
+                <span>0</span>
+
+                <span>0.1</span>
+                <span>0.4</span>
+                <span>0.5</span>
+
+                <span>1</span>
+                <span>0</span>
+                <span>0</span>
+            </div>
+
+            <p class="keterangan">
+                State awal yang digunakan adalah state 0
+                dan state tujuan untuk hitting time adalah state 2.
+            </p>
+
+
+            <div class="grid-input">
+
+                <div class="form-group">
+                    <label>Jumlah langkah grafik (n)</label>
+
+                    <input
+                        type="number"
+                        id="nMarkov3"
+                        value="30"
+                        min="1"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Jumlah langkah simulasi</label>
+
+                    <input
+                        type="number"
+                        id="simulasiMarkov3"
+                        value="10000"
+                        min="100"
+                    >
+                </div>
+
+            </div>
+
+
+            <button onclick="hitungMarkov3()">
+                Hitung dan Simulasikan
+            </button>
+
+
+            <div id="hasilMarkov3"
+                 class="hasil"
+                 style="display:none">
+
+                <h3>Hasil Perhitungan</h3>
+
+
+                <div class="hasil-grid">
+
+                    <div class="hasil-item">
+                        <span>Distribusi Invarian</span>
+                        <strong id="hasilInvariant3"></strong>
+                    </div>
+
+
+                    <div class="hasil-item">
+                        <span>Expected Hitting Time 0 → 2</span>
+                        <strong id="hasilHitting3"></strong>
+                    </div>
+
+                </div>
+
+
+                <div class="langkah">
+                    <h4>Penjelasan</h4>
+
+                    <div id="langkahMarkov3"></div>
+                </div>
+
+
+                <div class="grafik">
+                    <h4>
+                        Probabilitas Belum Mencapai State 2
+                    </h4>
+
+                    <canvas id="chartBelum"></canvas>
+                </div>
+
+
+                <div class="grafik">
+                    <h4>
+                        Proporsi Waktu Simulasi
+                    </h4>
+
+                    <canvas id="chartSimulasi"></canvas>
+                </div>
+
+
+                <div class="grafik">
+                    <h4>
+                        Perubahan Distribusi πn
+                    </h4>
+
+                    <canvas id="chartPi"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ====================================================== -->
+    <!-- SOAL 2 : RANDOM SUM -->
+    <!-- ====================================================== -->
+
+    <section id="randomSum" class="fitur">
+
+        <button class="kembali" onclick="kembali()">
+            ← Kembali ke Beranda
+        </button>
+
+        <div class="judul-bagian">
+
+            <h2>Random Sum Poisson</h2>
+
+            <p>
+                Implementasi Problem 15.12
+                dari Jean Walrand.
+            </p>
+
+        </div>
+
+
+        <div class="kotak">
+
+            <h3>Masukkan Parameter</h3>
+
+
+            <div class="grid-input">
+
+                <div class="form-group">
+
+                    <label>
+                        E[N] - Rata-rata jumlah pelanggan
+                    </label>
+
+                    <input
+                        type="number"
+                        id="enRandom"
+                        value="80"
+                        min="0"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        E[X] - Rata-rata penarikan
+                    </label>
+
+                    <input
+                        type="number"
+                        id="exRandom"
+                        value="30"
+                        min="0"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Var(X) - Variansi penarikan
+                    </label>
+
+                    <input
+                        type="number"
+                        id="varxRandom"
+                        value="400"
+                        min="0"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button onclick="hitungRandomSum()">
+                Hitung
+            </button>
+
+            <button class="reset"
+                    onclick="resetRandomSum()">
+                Reset
+            </button>
+
+
+            <div id="hasilRandomSum"
+                 class="hasil"
+                 style="display:none">
+
+                <h3>Hasil Perhitungan</h3>
+
+
+                <div class="hasil-grid">
+
+                    <div class="hasil-item">
+
+                        <span>E[S]</span>
+
+                        <strong id="hasilES"></strong>
+
+                    </div>
+
+
+                    <div class="hasil-item">
+
+                        <span>Var(S)</span>
+
+                        <strong id="hasilVarS"></strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="langkah">
+
+                    <h4>Langkah Perhitungan</h4>
+
+                    <div id="langkahRandomSum"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ====================================================== -->
+    <!-- SOAL 3 : POISSON -->
+    <!-- ====================================================== -->
+
+    <section id="poisson" class="fitur">
+
+        <button class="kembali" onclick="kembali()">
+            ← Kembali ke Beranda
+        </button>
+
+
+        <div class="judul-bagian">
+
+            <h2>Proses Poisson</h2>
+
+            <p>
+                Implementasi Latihan No. 2
+                dari H. Sugiyarto.
+            </p>
+
+        </div>
+
+
+        <div class="kotak">
+
+            <h3>Kalkulator Proses Poisson</h3>
+
+
+            <div class="grid-input">
+
+                <div class="form-group">
+
+                    <label>
+                        Laju Kedatangan λ (per jam)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="lambdaPoisson"
+                        value="10"
+                        min="0"
+                        step="0.1"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Lama Waktu Mean dan Variansi
+                    </label>
+
+                    <input
+                        type="number"
+                        id="waktuPoisson"
+                        value="9"
+                        min="0"
+                        step="0.1"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Interval Waktu Probabilitas
+                    </label>
+
+                    <input
+                        type="number"
+                        id="intervalPoisson"
+                        value="0.5"
+                        min="0"
+                        step="0.1"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Jumlah Kejadian k
+                    </label>
+
+                    <input
+                        type="number"
+                        id="kPoisson"
+                        value="0"
+                        min="0"
+                        step="1"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button onclick="hitungPoisson()">
+                Hitung
+            </button>
+
+            <button
+                class="reset"
+                onclick="resetPoisson()">
+
+                Reset
+
+            </button>
+
+
+            <div id="hasilPoisson"
+                 class="hasil"
+                 style="display:none">
+
+
+                <h3>Hasil Perhitungan</h3>
+
+
+                <div class="hasil-grid">
+
+                    <div class="hasil-item">
+
+                        <span>Mean</span>
+
+                        <strong id="hasilMean"></strong>
+
+                    </div>
+
+
+                    <div class="hasil-item">
+
+                        <span>Variansi</span>
+
+                        <strong id="hasilVariansi"></strong>
+
+                    </div>
+
+
+                    <div class="hasil-item">
+
+                        <span>Probabilitas</span>
+
+                        <strong id="hasilProbabilitas"></strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="langkah">
+
+                    <h4>Langkah Perhitungan</h4>
+
+                    <div id="langkahPoisson"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ====================================================== -->
+    <!-- SOAL 4 : ANTRIAN M/M/1 -->
+    <!-- ====================================================== -->
+
+    <section id="antrian" class="fitur">
+
+        <button class="kembali" onclick="kembali()">
+            ← Kembali ke Beranda
+        </button>
+
+
+        <div class="judul-bagian">
+
+            <h2>Model Antrian M/M/1</h2>
+
+            <p>
+                Implementasi Contoh 9.1
+                dari H. Sugiyarto.
+            </p>
+
+        </div>
+
+
+        <div class="kotak">
+
+            <h3>Masukkan Parameter</h3>
+
+
+            <div class="grid-input">
+
+                <div class="form-group">
+
+                    <label>
+                        Rata-rata waktu antar-kedatangan (menit)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="arrivalAntrian"
+                        value="25"
+                        min="0.01"
+                        step="0.1"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Rata-rata waktu pelayanan (menit)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="serviceAntrian"
+                        value="15"
+                        min="0.01"
+                        step="0.1"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Batas waktu dalam sistem (menit)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="batasAntrian"
+                        value="45"
+                        min="0.01"
+                        step="0.1"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button onclick="hitungAntrian()">
+                Hitung
+            </button>
+
+            <button
+                class="reset"
+                onclick="resetAntrian()">
+
+                Reset
+
+            </button>
+
+
+            <div id="hasilAntrian"
+                 class="hasil"
+                 style="display:none">
+
+                <h3>Hasil Perhitungan</h3>
+
+
+                <div class="hasil-grid">
+
+                    <div class="hasil-item">
+
+                        <span>Intensitas Lalu Lintas (ρ)</span>
+
+                        <strong id="hasilRho"></strong>
+
+                    </div>
+
+
+                    <div class="hasil-item">
+
+                        <span>Probabilitas Server Sibuk</span>
+
+                        <strong id="hasilSibuk"></strong>
+
+                    </div>
+
+
+                    <div class="hasil-item">
+
+                        <span>Rata-rata Waktu Tunggu Wq</span>
+
+                        <strong id="hasilWq"></strong>
+
+                    </div>
+
+
+                    <div class="hasil-item">
+
+                        <span>Rata-rata Waktu Sistem W</span>
+
+                        <strong id="hasilW"></strong>
+
+                    </div>
+
+
+                    <div class="hasil-item">
+
+                        <span>
+                            Waktu Antar-Kedatangan Kritis
+                        </span>
+
+                        <strong id="hasilKritis"></strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="status"
+                     id="statusAntrian">
+                </div>
+
+
+                <div class="langkah">
+
+                    <h4>Langkah Perhitungan</h4>
+
+                    <div id="langkahAntrian"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ====================================================== -->
+    <!-- SOAL 5 : MARKOV 2 STATE -->
+    <!-- ====================================================== -->
+
+    <section id="markov2" class="fitur">
+
+        <button class="kembali" onclick="kembali()">
+            ← Kembali ke Beranda
+        </button>
+
+
+        <div class="judul-bagian">
+
+            <h2>Markov 2 State</h2>
+
+            <p>
+                Implementasi Problem 2.4.6
+                dari Zakhar Kabluchko.
+            </p>
+
+        </div>
+
+
+        <div class="kotak">
+
+            <h3>Model Telepon</h3>
+
+            <p class="keterangan">
+                State 0 = Free dan State 1 = Busy.
+                Masukkan probabilitas p dan q.
+            </p>
+
+
+            <div class="matrix dua">
+
+                <span>1 − p</span>
+                <span>p</span>
+
+                <span>q</span>
+                <span>1 − q</span>
+
+            </div>
+
+
+            <div class="grid-input">
+
+
+                <div class="form-group">
+
+                    <label>
+                        p = Probabilitas Free → Busy
+                    </label>
+
+                    <input
+                        type="number"
+                        id="pMarkov2"
+                        placeholder="Contoh: 0.2"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        q = Probabilitas Busy → Free
+                    </label>
+
+                    <input
+                        type="number"
+                        id="qMarkov2"
+                        placeholder="Contoh: 0.3"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Jumlah Langkah n
+                    </label>
+
+                    <input
+                        type="number"
+                        id="nMarkov2"
+                        value="1000"
+                        min="1"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button onclick="hitungMarkov2()">
+                Hitung
+            </button>
+
+
+            <div id="hasilMarkov2"
+                 class="hasil"
+                 style="display:none">
+
+
+                <h3>Hasil Perhitungan</h3>
+
+
+                <div class="hasil-grid">
+
+                    <div class="hasil-item">
+
+                        <span>
+                            λ₀ (Free)
+                        </span>
+
+                        <strong id="hasilLambda0"></strong>
+
+                    </div>
+
+
+                    <div class="hasil-item">
+
+                        <span>
+                            λ₁ (Busy)
+                        </span>
+
+                        <strong id="hasilLambda1"></strong>
+
+                    </div>
+
+
+                    <div class="hasil-item">
+
+                        <span>
+                            P(Xn = Free) Eksak
+                        </span>
+
+                        <strong id="hasilExactFree"></strong>
+
+                    </div>
+
+
+                    <div class="hasil-item">
+
+                        <span>
+                            Pendekatan n Besar
+                        </span>
+
+                        <strong id="hasilApproxFree"></strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="langkah">
+
+                    <h4>Langkah Perhitungan</h4>
+
+                    <div id="langkahMarkov2"></div>
+
+                </div>
+
+
+                <div class="grafik">
+
+                    <h4>
+                        Konvergensi Probabilitas Free
+                    </h4>
+
+                    <canvas id="chartMarkov2"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<footer>
+
+    <p>
+        StochSolve — Mini Riset Pemodelan dan Simulasi Matematis
+    </p>
+
+    <p>
+        Program Studi Ilmu Komputer • Universitas Negeri Medan
+    </p>
+
+</footer>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
